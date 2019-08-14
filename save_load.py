@@ -8,8 +8,6 @@ import os
 
 import torch
 
-from .timestamp import get_timestamp
-
 
 def load_models(load_path: str, **kwargs):
     """Load specified models.
@@ -25,30 +23,22 @@ def load_models(load_path: str, **kwargs):
         value.load_state_dict(state_dict[key])
 
 
-def save_models(save_dir: str, suffix: str = "net", **kwargs):
+def save_models(save_dir: str, filename: str = "net", **kwargs):
     """Save specified models.
 
     Parameters
     ----------
     save_dir : str
         Save directory, not excluding the filename.
-    suffix : str
-        Savefile suffix after timestamp.
-
-    Returns
-    -------
-    unique_save_dir : str
-        The unique directory with timestamp, generated
-        inside the specified save directory.
+    filename : str
+        Save filename.
 
     """
     # Create specified directory if it does not exist yet
-    unique_save_dir = save_dir + f"/{get_timestamp()}/"
-    unique_save_path = save_dir + f"/{get_timestamp()}/{suffix}.pt"
-    if not os.path.exists(unique_save_dir):
-        os.makedirs(unique_save_dir)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
     torch.save(
-        {key: value.state_dict() for key, value in kwargs.items()}, unique_save_path
+        {key: value.state_dict() for key, value in kwargs.items()},
+        f"{save_dir}/{filename}.pt",
     )
-    return unique_save_dir
