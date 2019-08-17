@@ -16,3 +16,10 @@ def set_global_random_seeds(seed, use_numpy=False, use_torch=False):
         torch.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
+
+
+def set_env_random_seeds(env, seed):
+    """Set random seeds for given OpenAI Gym environment to ensure reproducibility."""
+    env.seed(seed)
+    env.observation_space.seed(seed)
+    env.action_space.seed(seed)
