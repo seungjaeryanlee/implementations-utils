@@ -3,7 +3,7 @@ from typing import Callable
 
 
 def get_linear_anneal_func(
-    start_value: float, end_value: float, end_steps: int
+    start_value: float, end_value: float, start_step: int, end_step: int
 ) -> Callable:
     """Create a linear annealing function.
 
@@ -13,8 +13,10 @@ def get_linear_anneal_func(
         Initial value for linear annealing.
     end_value : float
         Terminal value for linear annealing.
-    end_steps : int
-        Number of steps to anneal value.
+    start_step : int
+        Step to start linear annealing.
+    end_step : int
+        Step to end linear annealing.
 
     Returns
     -------
@@ -23,8 +25,18 @@ def get_linear_anneal_func(
 
     """
 
-    def linear_anneal_func(x):
-        assert x >= 0
-        return (end_value - start_value) * min(x, end_steps) / end_steps + start_value
+    def linear_anneal_func(step):
+        if step <= start_step:
+            return start_value
+        if step >= end_step:
+            return end_value
+
+        # Formula for line when two points are known:
+        #             y1 - y0
+        #   y - y0 = --------- (x - x0)
+        #             x1 - x0
+        return (end_value - start_value) / (end_step - start_step) * (
+            step - start_step
+        ) + start_value
 
     return linear_anneal_func
